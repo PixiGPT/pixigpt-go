@@ -9,10 +9,20 @@ import (
 )
 
 // CreateRun starts an async run on a thread.
-func (c *Client) CreateRun(ctx context.Context, threadID, assistantID string, enableThinking bool) (*Run, error) {
+//
+// Temperature and MaxTokens are optional - if 0, server uses defaults.
+func (c *Client) CreateRun(ctx context.Context, threadID, assistantID string, temperature float32, maxTokens int, enableThinking bool) (*Run, error) {
 	reqBody := map[string]interface{}{
 		"assistant_id":    assistantID,
 		"enable_thinking": enableThinking,
+	}
+
+	// Only include if > 0 (server handles defaults)
+	if temperature > 0 {
+		reqBody["temperature"] = temperature
+	}
+	if maxTokens > 0 {
+		reqBody["max_tokens"] = maxTokens
 	}
 
 	body, err := json.Marshal(reqBody)
@@ -37,6 +47,11 @@ func (c *Client) GetRun(ctx context.Context, threadID, runID string) (*Run, erro
 		return nil, err
 	}
 	return &run, nil
+}
+
+// CreateRunSimple starts an async run with defaults (no temp/max_tokens).
+func (c *Client) CreateRunSimple(ctx context.Context, threadID, assistantID string, enableThinking bool) (*Run, error) {
+	return c.CreateRun(ctx, threadID, assistantID, 0, 0, enableThinking)
 }
 
 // WaitForRun polls until run completes (or fails).

@@ -28,13 +28,9 @@ import (
 //	    fmt.Printf("Reasoning: %s\n", resp.Choices[0].ReasoningContent)
 //	}
 func (c *Client) CreateChatCompletion(ctx context.Context, req ChatCompletionRequest) (*ChatCompletionResponse, error) {
-	// Set defaults
-	if req.Temperature == 0 {
-		req.Temperature = 0.7
-	}
-	if req.MaxTokens == 0 {
-		req.MaxTokens = 2000
-	}
+	// Note: Server defaults temperature to 0.6 if 0
+	// Note: Server omits max_tokens if 0 (lets vLLM handle it)
+	// No client-side defaults needed - pass values as-is
 
 	body, err := json.Marshal(req)
 	if err != nil {
