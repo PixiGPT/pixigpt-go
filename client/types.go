@@ -15,20 +15,21 @@ type ChatCompletionRequest struct {
 	EnableThinking *bool     `json:"enable_thinking,omitempty"`
 }
 
+// ChatCompletionChoice represents a single choice in the response.
+type ChatCompletionChoice struct {
+	Index            int    `json:"index"`
+	Message          Message `json:"message"`
+	FinishReason     string `json:"finish_reason"`
+	ReasoningContent string `json:"reasoning_content,omitempty"` // Chain of thought reasoning
+}
+
 // ChatCompletionResponse represents the response from chat completions.
 type ChatCompletionResponse struct {
-	ID      string `json:"id"`
-	Object  string `json:"object"`
-	Created int64  `json:"created"`
-	Model   string `json:"model"`
-	Choices []struct {
-		Index   int `json:"index"`
-		Message struct {
-			Role    string `json:"role"`
-			Content string `json:"content"`
-		} `json:"message"`
-		FinishReason string `json:"finish_reason"`
-	} `json:"choices"`
+	ID      string                   `json:"id"`
+	Object  string                   `json:"object"`
+	Created int64                    `json:"created"`
+	Model   string                   `json:"model"`
+	Choices []ChatCompletionChoice   `json:"choices"`
 	Usage struct {
 		PromptTokens     int `json:"prompt_tokens"`
 		CompletionTokens int `json:"completion_tokens"`
@@ -44,20 +45,27 @@ type Thread struct {
 	Metadata  map[string]string `json:"metadata,omitempty"`
 }
 
+// MessageContentText represents text content in a message.
+type MessageContentText struct {
+	Value       string        `json:"value"`
+	Annotations []interface{} `json:"annotations"`
+}
+
+// MessageContent represents content in a thread message.
+type MessageContent struct {
+	Type string              `json:"type"`
+	Text MessageContentText `json:"text"`
+}
+
 // ThreadMessage represents a message in a thread.
 type ThreadMessage struct {
-	ID        string `json:"id"`
-	Object    string `json:"object"`
-	CreatedAt int64  `json:"created_at"`
-	ThreadID  string `json:"thread_id"`
-	Role      string `json:"role"`
-	Content   []struct {
-		Type string `json:"type"`
-		Text struct {
-			Value       string        `json:"value"`
-			Annotations []interface{} `json:"annotations"`
-		} `json:"text"`
-	} `json:"content"`
+	ID               string           `json:"id"`
+	Object           string           `json:"object"`
+	CreatedAt        int64            `json:"created_at"`
+	ThreadID         string           `json:"thread_id"`
+	Role             string           `json:"role"`
+	Content          []MessageContent `json:"content"`
+	ReasoningContent string           `json:"reasoning_content,omitempty"` // Chain of thought reasoning
 }
 
 // Run represents an async run.

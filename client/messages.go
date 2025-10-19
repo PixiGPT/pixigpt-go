@@ -28,6 +28,8 @@ func (c *Client) CreateMessage(ctx context.Context, threadID string, role, conte
 }
 
 // ListMessages retrieves messages from a thread.
+//
+// Chain of thought reasoning is automatically extracted from <think> tags.
 func (c *Client) ListMessages(ctx context.Context, threadID string, limit int) ([]ThreadMessage, error) {
 	if limit == 0 {
 		limit = 20
@@ -44,6 +46,15 @@ func (c *Client) ListMessages(ctx context.Context, threadID string, limit int) (
 	path := fmt.Sprintf("/threads/%s/messages?limit=%d", threadID, limit)
 	if err := c.doRequest(ctx, "GET", path, nil, &resp); err != nil {
 		return nil, err
+	}
+
+	// Extract reasoning from each message
+	for i := range resp.Data {
+		if len(resp.Data[i].Content) > 0 {
+			mainContent, reasoning := extractReasoning(resp.Data[i].Content[0].Text.Value)
+			resp.Data[i].Content[0].Text.Value = mainContent
+			resp.Data[i].ReasoningContent = reasoning
+		}
 	}
 
 	return resp.Data, nil

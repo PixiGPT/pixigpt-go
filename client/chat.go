@@ -11,6 +11,9 @@ import (
 // This is the simplest way to use PixiGPT - no thread management needed.
 // The client manages conversation history.
 //
+// Chain of thought reasoning is automatically extracted from <think> tags
+// and placed in the ReasoningContent field of each choice.
+//
 // Example:
 //
 //	resp, err := client.CreateChatCompletion(ctx, ChatCompletionRequest{
@@ -21,6 +24,9 @@ import (
 //	    Temperature: 0.7,
 //	    MaxTokens: 2000,
 //	})
+//	if resp.Choices[0].ReasoningContent != "" {
+//	    fmt.Printf("Reasoning: %s\n", resp.Choices[0].ReasoningContent)
+//	}
 func (c *Client) CreateChatCompletion(ctx context.Context, req ChatCompletionRequest) (*ChatCompletionResponse, error) {
 	// Set defaults
 	if req.Temperature == 0 {
@@ -38,6 +44,13 @@ func (c *Client) CreateChatCompletion(ctx context.Context, req ChatCompletionReq
 	var resp ChatCompletionResponse
 	if err := c.doRequest(ctx, "POST", "/chat/completions", bytes.NewReader(body), &resp); err != nil {
 		return nil, err
+	}
+
+	// Extract reasoning from each choice
+	for i := range resp.Choices {
+		mainContent, reasoning := extractReasoning(resp.Choices[i].Message.Content)
+		resp.Choices[i].Message.Content = mainContent
+		resp.Choices[i].ReasoningContent = reasoning
 	}
 
 	return &resp, nil
