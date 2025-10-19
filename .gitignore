@@ -1,0 +1,19 @@
+# Environment
+.env
+
+# Build output
+pixigpt-cli
+dist/
+build/
+
+# Go
+*.exe
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+vendor/
+
+# Development
+todo.md

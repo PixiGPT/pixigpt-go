@@ -1,0 +1,24 @@
+package client
+
+import (
+	"bytes"
+	"context"
+)
+
+// CreateThread creates a new conversation thread.
+func (c *Client) CreateThread(ctx context.Context) (*Thread, error) {
+	var thread Thread
+	if err := c.doRequest(ctx, "POST", "/threads", bytes.NewReader([]byte("{}")), &thread); err != nil {
+		return nil, err
+	}
+	return &thread, nil
+}
+
+// GetThread retrieves a thread by ID.
+func (c *Client) GetThread(ctx context.Context, threadID string) (*Thread, error) {
+	var thread Thread
+	if err := c.doRequest(ctx, "GET", "/threads/"+threadID, nil, &thread); err != nil {
+		return nil, err
+	}
+	return &thread, nil
+}
