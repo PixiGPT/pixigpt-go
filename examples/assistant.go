@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/fycat/pixigpt-go/client"
+	"github.com/PixiGPT/pixigpt-go/client"
 	"github.com/joho/godotenv"
 )
 

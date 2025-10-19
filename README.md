@@ -14,7 +14,7 @@ Production-grade Go client for the [PixiGPT API](https://pixigpt.com).
 ## Installation
 
 ```bash
-go get github.com/fycat/pixigpt-go
+go get github.com/PixiGPT/pixigpt-go
 ```
 
 ## Quick Start
@@ -27,7 +27,7 @@ import (
     "fmt"
     "log"
 
-    "github.com/fycat/pixigpt-go/client"
+    "github.com/PixiGPT/pixigpt-go/client"
 )
 
 func main() {
