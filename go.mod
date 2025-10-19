@@ -1,4 +1,4 @@
-module github.com/fycat/pixigpt-go
+module github.com/PixiGPT/pixigpt-go
 
 go 1.23.4
 
