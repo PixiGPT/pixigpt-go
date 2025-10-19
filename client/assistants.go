@@ -79,3 +79,21 @@ func (c *Client) UpdateAssistant(ctx context.Context, assistantID, name, instruc
 func (c *Client) DeleteAssistant(ctx context.Context, assistantID string) error {
 	return c.doRequest(ctx, "DELETE", "/assistants/"+assistantID, nil, nil)
 }
+
+// ListAssistantThreads retrieves all threads used by an assistant.
+func (c *Client) ListAssistantThreads(ctx context.Context, assistantID string, limit int) ([]Thread, error) {
+	path := fmt.Sprintf("/assistants/%s/threads", assistantID)
+	if limit > 0 {
+		path = fmt.Sprintf("%s?limit=%d", path, limit)
+	}
+
+	var response struct {
+		Object string   `json:"object"`
+		Data   []Thread `json:"data"`
+	}
+	if err := c.doRequest(ctx, "GET", path, nil, &response); err != nil {
+		return nil, err
+	}
+
+	return response.Data, nil
+}

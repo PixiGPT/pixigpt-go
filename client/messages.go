@@ -27,6 +27,35 @@ func (c *Client) CreateMessage(ctx context.Context, threadID string, role, conte
 	return &msg, nil
 }
 
+// BulkMessage represents a message in a bulk create request.
+type BulkMessage struct {
+	Role    string `json:"role"`
+	Content string `json:"content"`
+}
+
+// CreateMessagesBulk adds multiple messages to a thread in one request.
+func (c *Client) CreateMessagesBulk(ctx context.Context, threadID string, messages []BulkMessage) ([]ThreadMessage, error) {
+	reqBody := map[string]interface{}{
+		"messages": messages,
+	}
+
+	body, err := json.Marshal(reqBody)
+	if err != nil {
+		return nil, err
+	}
+
+	var resp struct {
+		Object string          `json:"object"`
+		Data   []ThreadMessage `json:"data"`
+	}
+
+	if err := c.doRequest(ctx, "POST", "/threads/"+threadID+"/messages/bulk", bytes.NewReader(body), &resp); err != nil {
+		return nil, err
+	}
+
+	return resp.Data, nil
+}
+
 // ListMessages retrieves messages from a thread.
 //
 // Chain of thought reasoning is automatically extracted from <think> tags.
