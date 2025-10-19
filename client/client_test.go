@@ -130,7 +130,7 @@ func TestThreadWorkflow(t *testing.T) {
 
 	// 3. Create run
 	t.Log("Creating run...")
-	run, err := testClient.CreateRun(ctx, thread.ID, testAssistantID, true)
+	run, err := testClient.CreateRunSimple(ctx, thread.ID, testAssistantID, true)
 	if err != nil {
 		t.Fatalf("CreateRun failed: %v", err)
 	}
