@@ -77,14 +77,6 @@ func (c *Client) ListMessages(ctx context.Context, threadID string, limit int) (
 		return nil, err
 	}
 
-	// Extract reasoning from each message
-	for i := range resp.Data {
-		if len(resp.Data[i].Content) > 0 {
-			mainContent, reasoning := extractReasoning(resp.Data[i].Content[0].Text.Value)
-			resp.Data[i].Content[0].Text.Value = mainContent
-			resp.Data[i].ReasoningContent = reasoning
-		}
-	}
-
+	// Server now returns reasoning_content directly - no parsing needed
 	return resp.Data, nil
 }

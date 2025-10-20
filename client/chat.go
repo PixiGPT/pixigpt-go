@@ -11,8 +11,8 @@ import (
 // This is the simplest way to use PixiGPT - no thread management needed.
 // The client manages conversation history.
 //
-// Chain of thought reasoning is automatically extracted from <think> tags
-// and placed in the ReasoningContent field of each choice.
+// Chain of thought reasoning is returned in the ReasoningContent field
+// when enable_thinking is true (default).
 //
 // Example:
 //
@@ -42,12 +42,6 @@ func (c *Client) CreateChatCompletion(ctx context.Context, req ChatCompletionReq
 		return nil, err
 	}
 
-	// Extract reasoning from each choice
-	for i := range resp.Choices {
-		mainContent, reasoning := extractReasoning(resp.Choices[i].Message.Content)
-		resp.Choices[i].Message.Content = mainContent
-		resp.Choices[i].ReasoningContent = reasoning
-	}
-
+	// Server now returns reasoning_content directly - no parsing needed
 	return &resp, nil
 }

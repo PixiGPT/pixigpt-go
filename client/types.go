@@ -2,17 +2,37 @@ package client
 
 // Message represents a chat message.
 type Message struct {
-	Role    string `json:"role"`
-	Content string `json:"content"`
+	Role      string     `json:"role"`
+	Content   string     `json:"content"`
+	ToolCalls []ToolCall `json:"tool_calls,omitempty"`
 }
 
+// ToolCall represents a function call made by the assistant.
+type ToolCall struct {
+	ID       string           `json:"id"`
+	Type     string           `json:"type"`
+	Function ToolCallFunction `json:"function"`
+}
+
+// ToolCallFunction represents the function details within a tool call.
+type ToolCallFunction struct {
+	Name      string `json:"name"`
+	Arguments string `json:"arguments"` // JSON string
+}
+
+// Tool represents a function tool definition (OpenAI format).
+type Tool map[string]interface{}
+
 // ChatCompletionRequest represents a request to the chat completions endpoint.
+// AssistantID is optional - if omitted, messages[0] must be a system message.
+// Tools can be provided to override assistant's configured tools.
 type ChatCompletionRequest struct {
-	AssistantID    string    `json:"assistant_id"`
+	AssistantID    string    `json:"assistant_id,omitempty"`
 	Messages       []Message `json:"messages"`
 	Temperature    float32   `json:"temperature,omitempty"`
 	MaxTokens      int       `json:"max_tokens,omitempty"`
 	EnableThinking *bool     `json:"enable_thinking,omitempty"`
+	Tools          []Tool    `json:"tools,omitempty"`
 }
 
 // ChatCompletionChoice represents a single choice in the response.

@@ -36,7 +36,7 @@ func main() {
 
     // Send chat completion
     resp, err := c.CreateChatCompletion(context.Background(), client.ChatCompletionRequest{
-        AssistantID: "your-assistant-id",
+        AssistantID: "your-assistant-id",  // Optional - omit for pure OpenAI mode
         Messages: []client.Message{
             {Role: "user", Content: "Hello!"},
         },
@@ -46,6 +46,11 @@ func main() {
     }
 
     fmt.Println(resp.Choices[0].Message.Content)
+
+    // Access chain of thought reasoning if available
+    if resp.Choices[0].ReasoningContent != "" {
+        fmt.Printf("Thinking: %s\n", resp.Choices[0].ReasoningContent)
+    }
 }
 ```
 
@@ -85,12 +90,58 @@ Simplest method - no thread management needed:
 
 ```go
 resp, err := c.CreateChatCompletion(ctx, client.ChatCompletionRequest{
-    AssistantID: assistantID,
+    AssistantID: assistantID,  // Optional - omit to provide your own system prompt
     Messages: []client.Message{
         {Role: "user", Content: "What's the weather?"},
     },
     Temperature: 0.7,
     MaxTokens: 2000,
+})
+```
+
+**With Tool Calling:**
+
+```go
+resp, err := c.CreateChatCompletion(ctx, client.ChatCompletionRequest{
+    AssistantID: assistantID,
+    Messages: []client.Message{
+        {Role: "user", Content: "What's the weather in Paris?"},
+    },
+    Tools: []client.Tool{
+        {
+            "type": "function",
+            "function": map[string]interface{}{
+                "name": "get_weather",
+                "description": "Get current weather for a location",
+                "parameters": map[string]interface{}{
+                    "type": "object",
+                    "properties": map[string]interface{}{
+                        "location": map[string]interface{}{"type": "string"},
+                    },
+                },
+            },
+        },
+    },
+})
+
+// Check for tool calls
+if resp.Choices[0].FinishReason == "tool_calls" {
+    for _, toolCall := range resp.Choices[0].Message.ToolCalls {
+        fmt.Printf("Tool: %s(%s)\n", toolCall.Function.Name, toolCall.Function.Arguments)
+        // Execute tool and send result back...
+    }
+}
+```
+
+**Pure OpenAI Mode (No Assistant):**
+
+```go
+resp, err := c.CreateChatCompletion(ctx, client.ChatCompletionRequest{
+    // No AssistantID - provide your own system prompt
+    Messages: []client.Message{
+        {Role: "system", Content: "You are a helpful assistant."},
+        {Role: "user", Content: "Hello!"},
+    },
 })
 ```
 
