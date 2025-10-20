@@ -159,11 +159,12 @@ msg, err := c.CreateMessage(ctx, thread.ID, "user", "Hello!")
 // 3. Run assistant
 run, err := c.CreateRun(ctx, thread.ID, assistantID, true)
 
-// 4. Wait for completion
+// 4. Wait for completion (message included in response!)
 completedRun, err := c.WaitForRun(ctx, thread.ID, run.ID)
 
-// 5. Get messages
-messages, err := c.ListMessages(ctx, thread.ID, 10)
+// 5. Access the assistant's response directly
+content := completedRun.Message.Content[0].Text.Value
+reasoning := completedRun.Message.ReasoningContent  // Chain of thought if available
 ```
 
 ### Assistants

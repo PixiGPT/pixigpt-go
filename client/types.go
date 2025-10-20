@@ -91,13 +91,14 @@ type ThreadMessage struct {
 
 // Run represents an async run.
 type Run struct {
-	ID          string `json:"id"`
-	Object      string `json:"object"`
-	CreatedAt   int64  `json:"created_at"`
-	ThreadID    string `json:"thread_id"`
-	AssistantID string `json:"assistant_id"`
-	Status      string `json:"status"` // queued, in_progress, completed, failed
-	Model       string `json:"model"`
+	ID          string         `json:"id"`
+	Object      string         `json:"object"`
+	CreatedAt   int64          `json:"created_at"`
+	ThreadID    string         `json:"thread_id"`
+	AssistantID string         `json:"assistant_id"`
+	Status      string         `json:"status"` // queued, in_progress, completed, failed
+	Model       string         `json:"model"`
+	Message     *ThreadMessage `json:"message,omitempty"` // Populated when completed
 }
 
 // Assistant represents an AI assistant.
