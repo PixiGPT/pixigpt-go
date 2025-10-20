@@ -2,9 +2,10 @@ package client
 
 // Message represents a chat message.
 type Message struct {
-	Role      string     `json:"role"`
-	Content   string     `json:"content"`
-	ToolCalls []ToolCall `json:"tool_calls,omitempty"`
+	Role       string     `json:"role"`
+	Content    string     `json:"content"`
+	ToolCalls  []ToolCall `json:"tool_calls,omitempty"`
+	ToolCallID *string    `json:"tool_call_id,omitempty"` // For role="tool" messages
 }
 
 // ToolCall represents a function call made by the assistant.
