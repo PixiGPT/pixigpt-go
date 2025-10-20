@@ -1,7 +1,6 @@
 package client
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 )
@@ -38,7 +37,7 @@ func (c *Client) CreateChatCompletion(ctx context.Context, req ChatCompletionReq
 	}
 
 	var resp ChatCompletionResponse
-	if err := c.doRequest(ctx, "POST", "/chat/completions", bytes.NewReader(body), &resp); err != nil {
+	if err := c.doRequest(ctx, "POST", "/chat/completions", body, &resp); err != nil {
 		return nil, err
 	}
 

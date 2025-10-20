@@ -2,6 +2,7 @@
 package client
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -79,7 +80,7 @@ func New(apiKey, baseURL string, opts ...Option) *Client {
 }
 
 // doRequest executes an HTTP request with retries and proper error handling.
-func (c *Client) doRequest(ctx context.Context, method, path string, body io.Reader, result interface{}) error {
+func (c *Client) doRequest(ctx context.Context, method, path string, bodyBytes []byte, result interface{}) error {
 	url := c.baseURL + path
 	var lastErr error
 
@@ -93,6 +94,12 @@ func (c *Client) doRequest(ctx context.Context, method, path string, body io.Rea
 				return ctx.Err()
 			case <-time.After(backoff):
 			}
+		}
+
+		// Create fresh reader on each retry attempt
+		var body io.Reader
+		if len(bodyBytes) > 0 {
+			body = bytes.NewReader(bodyBytes)
 		}
 
 		req, err := http.NewRequestWithContext(ctx, method, url, body)

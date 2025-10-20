@@ -1,7 +1,6 @@
 package client
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -46,7 +45,7 @@ func (c *Client) CreateAssistant(ctx context.Context, name, instructions string,
 	}
 
 	var assistant Assistant
-	if err := c.doRequest(ctx, "POST", "/assistants", bytes.NewReader(body), &assistant); err != nil {
+	if err := c.doRequest(ctx, "POST", "/assistants", body, &assistant); err != nil {
 		return nil, err
 	}
 
@@ -69,7 +68,7 @@ func (c *Client) UpdateAssistant(ctx context.Context, assistantID, name, instruc
 	}
 
 	var assistant Assistant
-	if err := c.doRequest(ctx, "PUT", "/assistants/"+assistantID, bytes.NewReader(body), &assistant); err != nil {
+	if err := c.doRequest(ctx, "PUT", "/assistants/"+assistantID, body, &assistant); err != nil {
 		return nil, err
 	}
 

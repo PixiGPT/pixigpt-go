@@ -1,7 +1,6 @@
 package client
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -20,7 +19,7 @@ func (c *Client) CreateMessage(ctx context.Context, threadID string, role, conte
 	}
 
 	var msg ThreadMessage
-	if err := c.doRequest(ctx, "POST", "/threads/"+threadID+"/messages", bytes.NewReader(body), &msg); err != nil {
+	if err := c.doRequest(ctx, "POST", "/threads/"+threadID+"/messages", body, &msg); err != nil {
 		return nil, err
 	}
 
@@ -49,7 +48,7 @@ func (c *Client) CreateMessagesBulk(ctx context.Context, threadID string, messag
 		Data   []ThreadMessage `json:"data"`
 	}
 
-	if err := c.doRequest(ctx, "POST", "/threads/"+threadID+"/messages/bulk", bytes.NewReader(body), &resp); err != nil {
+	if err := c.doRequest(ctx, "POST", "/threads/"+threadID+"/messages/bulk", body, &resp); err != nil {
 		return nil, err
 	}
 

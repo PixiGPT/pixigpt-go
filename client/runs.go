@@ -1,7 +1,6 @@
 package client
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -32,7 +31,7 @@ func (c *Client) CreateRun(ctx context.Context, threadID, assistantID string, te
 
 	var run Run
 	path := fmt.Sprintf("/threads/%s/runs", threadID)
-	if err := c.doRequest(ctx, "POST", path, bytes.NewReader(body), &run); err != nil {
+	if err := c.doRequest(ctx, "POST", path, body, &run); err != nil {
 		return nil, err
 	}
 
