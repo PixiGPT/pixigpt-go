@@ -87,6 +87,39 @@ type ThreadMessage struct {
 	Role             string           `json:"role"`
 	Content          []MessageContent `json:"content"`
 	ReasoningContent string           `json:"reasoning_content,omitempty"` // Chain of thought reasoning
+	// Attachments from tool execution (Pixi tools only)
+	Sources []MessageSource `json:"sources,omitempty"`
+	Media   []MessageMedia  `json:"media,omitempty"`
+	Code    []MessageCode   `json:"code,omitempty"`
+}
+
+// MessageSource represents a source attachment from tools like WebSearch, Fetch
+type MessageSource struct {
+	ID       string  `json:"id"`
+	ToolName string  `json:"tool_name"`
+	Title    *string `json:"title,omitempty"`
+	URL      *string `json:"url,omitempty"`
+	Snippet  *string `json:"snippet,omitempty"`
+}
+
+// MessageMedia represents media attachment from DrawImage, EditImage, UserUpload
+type MessageMedia struct {
+	ID          string  `json:"id"` // ShortID
+	Source      string  `json:"source"`
+	Type        string  `json:"type"` // image, audio
+	Prompt      *string `json:"prompt,omitempty"`
+	Description *string `json:"description,omitempty"`
+	SignedURL   string  `json:"signed_url"` // 24h temporary R2 signed URL
+}
+
+// MessageCode represents code execution result
+type MessageCode struct {
+	ID              string  `json:"id"`
+	Language        string  `json:"language"`
+	Code            string  `json:"code"`
+	Stdout          *string `json:"stdout,omitempty"`
+	Stderr          *string `json:"stderr,omitempty"`
+	ExecutionTimeMs *int    `json:"execution_time_ms,omitempty"`
 }
 
 // Run represents an async run.

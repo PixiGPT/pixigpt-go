@@ -165,6 +165,17 @@ completedRun, err := c.WaitForRun(ctx, thread.ID, run.ID)
 // 5. Access the assistant's response directly
 content := completedRun.Message.Content[0].Text.Value
 reasoning := completedRun.Message.ReasoningContent  // Chain of thought if available
+
+// 6. Access tool execution results (Pixi tools only - when assistant has tools_config=null)
+for _, src := range completedRun.Message.Sources {
+    fmt.Printf("Source [%s]: %s - %s\n", src.ToolName, src.Title, src.URL)
+}
+for _, media := range completedRun.Message.Media {
+    fmt.Printf("Media [%s]: %s\n", media.Source, media.SignedURL)
+}
+for _, code := range completedRun.Message.Code {
+    fmt.Printf("Code [%s]: %s\n", code.Language, code.Stdout)
+}
 ```
 
 ### Assistants
