@@ -84,6 +84,51 @@ c := client.New(apiKey, baseURL,
 
 ## API Methods
 
+### Vision & Moderation
+
+Image/video analysis and content moderation:
+
+```go
+// Image analysis
+resp, err := c.AnalyzeImage(ctx, client.VisionAnalyzeRequest{
+    ImageURL: "https://example.com/image.jpg",
+    UserPrompt: ptrString("Describe this in detail."),
+})
+
+// Tag generation
+resp, err := c.AnalyzeImageForTags(ctx, client.VisionTagsRequest{
+    ImageURL: "https://example.com/image.jpg",
+})
+
+// OCR text extraction
+resp, err := c.ExtractText(ctx, client.VisionOCRRequest{
+    ImageURL: "https://example.com/document.jpg",
+})
+
+// Video analysis (< 10MB)
+resp, err := c.AnalyzeVideo(ctx, client.VisionVideoRequest{
+    VideoURL: "https://example.com/video.mp4",
+    UserPrompt: ptrString("Describe what happens."),
+})
+
+// Text moderation (11 categories)
+resp, err := c.ModerateText(ctx, client.ModerationTextRequest{
+    Prompt: "text to moderate",
+})
+// Returns: category (SAFE, SEXUAL_ADULT, UNDERAGE_SEXUAL, etc.) + score (0.0-1.0)
+
+// Image/video moderation
+resp, err := c.ModerateMedia(ctx, client.ModerationMediaRequest{
+    MediaURL: "https://example.com/image.jpg",
+    IsVideo: false,
+})
+```
+
+**Moderation Categories:**
+- **CRITICAL:** `UNDERAGE_SEXUAL` (priority), `JAILBREAK`, `SUICIDE_SELF_HARM`, `PII`, `COPYRIGHT_VIOLATION`
+- **WARNING:** `VIOLENT`, `ILLEGAL_ACTS`, `UNETHICAL`, `HATE_SPEECH`
+- **ALLOWED:** `SEXUAL_ADULT` (explicit only), `SAFE` (everything else)
+
 ### Chat Completions (Stateless)
 
 Simplest method - no thread management needed:
@@ -220,6 +265,7 @@ See the [examples/](examples/) directory for complete working examples:
 - [`chat.go`](examples/chat.go) - Simple chat completion
 - [`thread.go`](examples/thread.go) - Multi-turn conversation with threads
 - [`assistant.go`](examples/assistant.go) - Assistant management
+- [`vision.go`](examples/vision.go) - Vision analysis and content moderation
 
 To run examples:
 
@@ -230,6 +276,9 @@ cp .env.example .env
 # Run chat example
 cd examples
 go run chat.go
+
+# Run vision example
+go run vision.go
 ```
 
 ## Production Considerations

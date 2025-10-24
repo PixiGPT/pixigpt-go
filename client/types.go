@@ -143,3 +143,74 @@ type Assistant struct {
 	Instructions string  `json:"instructions"`
 	ToolsConfig  *string `json:"tools_config,omitempty"`
 }
+
+// VisionUsage represents token usage for vision API calls.
+type VisionUsage struct {
+	PromptTokens     int `json:"prompt_tokens"`
+	CompletionTokens int `json:"completion_tokens"`
+	TotalTokens      int `json:"total_tokens"`
+}
+
+// VisionAnalyzeRequest represents a request to analyze an image.
+type VisionAnalyzeRequest struct {
+	ImageURL   string  `json:"image_url"`
+	UserPrompt *string `json:"user_prompt,omitempty"`
+}
+
+// VisionAnalyzeResponse represents the response from image analysis.
+type VisionAnalyzeResponse struct {
+	Result string       `json:"result"`
+	Usage  VisionUsage  `json:"usage"`
+}
+
+// VisionTagsRequest represents a request to generate tags for an image.
+type VisionTagsRequest struct {
+	ImageURL string `json:"image_url"`
+}
+
+// VisionTagsResponse represents the response from tag generation.
+type VisionTagsResponse struct {
+	Result string      `json:"result"`
+	Usage  VisionUsage `json:"usage"`
+}
+
+// VisionOCRRequest represents a request to extract text from an image.
+type VisionOCRRequest struct {
+	ImageURL string `json:"image_url"`
+}
+
+// VisionOCRResponse represents the response from OCR.
+type VisionOCRResponse struct {
+	Result string      `json:"result"`
+	Usage  VisionUsage `json:"usage"`
+}
+
+// VisionVideoRequest represents a request to analyze a video.
+type VisionVideoRequest struct {
+	VideoURL   string  `json:"video_url"`
+	UserPrompt *string `json:"user_prompt,omitempty"`
+}
+
+// VisionVideoResponse represents the response from video analysis.
+type VisionVideoResponse struct {
+	Result string      `json:"result"`
+	Usage  VisionUsage `json:"usage"`
+}
+
+// ModerationTextRequest represents a request to moderate text.
+type ModerationTextRequest struct {
+	Prompt string `json:"prompt"`
+}
+
+// ModerationMediaRequest represents a request to moderate image/video.
+type ModerationMediaRequest struct {
+	MediaURL string `json:"media_url"`
+	IsVideo  bool   `json:"is_video"`
+}
+
+// ModerationResponse represents the response from moderation.
+type ModerationResponse struct {
+	Category string      `json:"category"`
+	Score    float64     `json:"score"`
+	Usage    VisionUsage `json:"usage"`
+}
