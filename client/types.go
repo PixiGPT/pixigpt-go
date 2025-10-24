@@ -214,3 +214,58 @@ type ModerationResponse struct {
 	Score    float64     `json:"score"`
 	Usage    VisionUsage `json:"usage"`
 }
+
+// Embeddings & Rerank API types
+
+// EmbeddingRequest represents a request to generate embeddings.
+type EmbeddingRequest struct {
+	Input interface{} `json:"input"` // string or []string
+	Model string      `json:"model,omitempty"` // Ignored by server
+}
+
+// EmbeddingResponse represents the response from embeddings API.
+type EmbeddingResponse struct {
+	Object string          `json:"object"`
+	Data   []EmbeddingData `json:"data"`
+	Usage  EmbeddingUsage  `json:"usage"`
+}
+
+// EmbeddingData represents a single embedding.
+type EmbeddingData struct {
+	Object    string    `json:"object"`
+	Embedding []float32 `json:"embedding"`
+	Index     int       `json:"index"`
+}
+
+// EmbeddingUsage represents token usage for embeddings.
+type EmbeddingUsage struct {
+	PromptTokens int `json:"prompt_tokens"`
+	TotalTokens  int `json:"total_tokens"`
+}
+
+// RerankRequest represents a request to rerank documents.
+type RerankRequest struct {
+	Query     string   `json:"query"`
+	Documents []string `json:"documents"`
+	TopK      int      `json:"top_k,omitempty"` // Optional
+	Model     string   `json:"model,omitempty"` // Ignored by server
+}
+
+// RerankResponse represents the response from rerank API.
+type RerankResponse struct {
+	Object  string       `json:"object"`
+	Results []RerankData `json:"results"`
+	Usage   RerankUsage  `json:"usage"`
+}
+
+// RerankData represents a single reranked result.
+type RerankData struct {
+	Index          int     `json:"index"`
+	Document       string  `json:"document"`
+	RelevanceScore float32 `json:"relevance_score"`
+}
+
+// RerankUsage represents token usage for rerank.
+type RerankUsage struct {
+	TotalTokens int `json:"total_tokens"`
+}
